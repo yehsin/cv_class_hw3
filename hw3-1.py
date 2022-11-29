@@ -4,10 +4,7 @@ import sys
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import signal
-from skimage import color
-from scipy.spatial import distance
-
+import random
 # def Gaussian(x,y,sigma=5):
 #     gau = (1.0 / 2.0*pi*sigma**2 )* np.exp(-((x**2 + y**2) / (2.0 * sigma**2)))
 #     return gau/gau.sum()
@@ -107,14 +104,14 @@ def ransac(matches):
     threshold = 5
     correspondes = []
     max_inliners = []
-    final_h = np.zeros(3,3)
+    final_h = np.zeros((3,3))
     
 
     for i in range(1000):
         pts1 = []
         pts2 = []
         for i in range(4):
-            correspondes.append(matches[np.random.randrange(0, len(matches))])
+            correspondes = matches[random.randrange(0, len(matches))]
             pts1.append([correspondes[0], correspondes[1]])
             pts2.append([correspondes[2], correspondes[3]])
 
@@ -123,6 +120,7 @@ def ransac(matches):
 
         for j in range(len(matches)):
             distance = cal_error(matches[j],h)
+            print(distance)
             if distance < threshold:
                 inliners.append(matches[j]) 
         if len(inliners) > len(max_inliners):
@@ -134,8 +132,8 @@ def ransac(matches):
 def plot_images(kp_left_img, kp_right_img): 
     total_kp = np.concatenate((kp_left_img, kp_right_img), axis=1)
     print(total_kp.shape)
-    plt.imshow(total_kp)
-    plt.show()
+    # plt.imshow(total_kp)
+    # plt.show()
     return total_kp
 
 def plot_matches(matches, img):
@@ -169,10 +167,10 @@ def SIFT(img1, img2, gray1, gray2):
     img1 = cv2.drawKeypoints(gray1.astype('uint8'),kp1,img1, color=(255,100,255))
     img2 = cv2.drawKeypoints(gray2.astype('uint8'),kp2,img2, color=(255,100,255))
     print(img1.shape, img2.shape)
-    plt.imshow(img1, cmap="gray")
-    plt.show()
-    plt.imshow(img2, cmap="gray")
-    plt.show()
+    # plt.imshow(img1, cmap="gray")
+    # plt.show()
+    # plt.imshow(img2, cmap="gray")
+    # plt.show()
     print("[INFO] la_notredame of keypoints detected: {}".format(len(kp1)))
     print("[INFO] lb_notredame of keypoints detected: {}".format(len(kp2)))
     print("[INFO] feature vector shape: {}".format(des1.shape))
